@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>LaxTime | Майнкрафт сервер 1.21.50</title>
+    <!-- Google Fonts & simple styling -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #0a0f1e 0%, #0c1222 100%);
+            color: #eef2ff;
+            line-height: 1.5;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* декоративный шум и сетка */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDQwIDQwIj48cGF0aCBmaWxsPSIjMjIyZjNmIiBmaWxsLW9wYWNpdHk9IjAuMDMiIGQ9Ik0wIDBoNDB2NDBIMHoiLz48L3N2Zz4=');
+            opacity: 0.2;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 2rem 1.5rem;
+            position: relative;
+            z-index: 2;
+            flex: 1;
+        }
+
+        /* хедер */
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .logo {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #C0F2FF, #8A6EFF);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            letter-spacing: -0.02em;
+            display: inline-block;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .tagline {
+            font-size: 1.1rem;
+            color: #a5b4fc;
+            background: rgba(255,255,255,0.05);
+            backdrop-filter: blur(4px);
+            display: inline-block;
+            padding: 0.3rem 1.2rem;
+            border-radius: 60px;
+            font-weight: 500;
+        }
+
+        /* карточка сервера */
+        .server-card {
+            background: rgba(18, 25, 45, 0.75);
+            backdrop-filter: blur(12px);
+            border-radius: 2rem;
+            border: 1px solid rgba(100, 120, 200, 0.3);
+            padding: 1.8rem;
+            margin-bottom: 2.5rem;
+            box-shadow: 0 20px 35px -12px rgba(0,0,0,0.4);
+            transition: transform 0.2s ease;
+        }
+
+        .server-card:hover {
+            border-color: rgba(138, 110, 255, 0.6);
+        }
+
+        .ip-section {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 1.2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px dashed rgba(255,255,255,0.2);
+        }
+
+        .ip-details h2 {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .ip-text {
+            background: #0a0f1a;
+            font-family: 'Monaco', 'Menlo', monospace;
+            font-size: 1.3rem;
+            padding: 0.5rem 1rem;
+            border-radius: 1rem;
+            letter-spacing: 0.5px;
+            border: 1px solid #2d3a5e;
+            display: inline-block;
+        }
+
+        .port-badge {
+            background: #2a2f45;
+            border-radius: 40px;
+            padding: 0.3rem 1rem;
+            font-size: 1rem;
+            font-weight: 500;
+        }
+
+        .version-chip {
+            background: #6c5ce7;
+            padding: 0.3rem 1rem;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .copy-btn {
+            background: rgba(108, 92, 231, 0.2);
+            border: 1px solid #6c5ce7;
+            color: white;
+            padding: 0.6rem 1.2rem;
+            border-radius: 2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .copy-btn:hover {
+            background: #6c5ce7;
+            transform: scale(0.98);
+            box-shadow: 0 5px 12px rgba(108,92,231,0.3);
+        }
+
+        .server-status {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 0.8rem;
+        }
+
+        .status-indicator {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .online-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: #22c55e;
+            box-shadow: 0 0 6px #22c55e;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.5; transform: scale(0.9);}
+            100% { opacity: 1; transform: scale(1.2);}
+        }
+
+        /* кнопки */
+        .action-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin: 2rem 0;
+            justify-content: center;
+        }
+
+        .btn {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255,255,255,0.15);
+            padding: 0.8rem 1.8rem;
+            border-radius: 3rem;
+            font-weight: 600;
+            color: #eef2ff;
+            text-decoration: none;
+            transition: 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: #6c5ce7;
+            border: none;
+            box-shadow: 0 4px 12px rgba(108,92,231,0.3);
+        }
+
+        .btn-primary:hover {
+            background: #5b4bdb;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline:hover {
+            background: rgba(108,92,231,0.3);
+            border-color: #6c5ce7;
+        }
+
+        /* фичи */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.8rem;
+            margin: 3rem 0;
+        }
+
+        .feature-card {
+            background: rgba(15, 23, 42, 0.6);
+            border-radius: 1.5rem;
+            padding: 1.5rem;
+            border: 1px solid rgba(100,116,139,0.3);
+            transition: all 0.2s;
+        }
+
+        .feature-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 0.6rem;
+            font-weight: 600;
+        }
+
+        .feature-card p {
+            color: #cbd5e6;
+        }
+
+        /* футер */
+        footer {
+            text-align: center;
+            padding: 2rem 1rem;
+            font-size: 0.85rem;
+            color: #6c7a8e;
+            border-top: 1px solid rgba(255,255,255,0.05);
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 700px) {
+            .container {
+                padding: 1.2rem;
+            }
+            .logo {
+                font-size: 2.5rem;
+            }
+            .ip-text {
+                font-size: 1rem;
+                word-break: break-all;
+            }
+            .ip-section {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">⚡ LaxTime</div>
+            <div class="tagline">ванильный опыт • дружное комьюнити • топовый хостинг</div>
+        </div>
+
+        <div class="server-card">
+            <div class="ip-section">
+                <div class="ip-details">
+                    <h2>
+                        <span class="ip-text" id="serverIpDisplay">LaxTime.minerent.io</span>
+                        <span class="port-badge">порт 31023</span>
+                    </h2>
+                    <div style="margin-top: 8px;">
+                        <span class="version-chip">
+                            🧱 Minecraft 1.21.50
+                        </span>
+                    </div>
+                </div>
+                <button class="copy-btn" id="copyIpBtn">
+                    📋 Копировать IP:порт
+                </button>
+            </div>
+            <div class="server-status">
+                <div class="status-indicator">
+                    <div class="online-dot"></div>
+                    <span>Статус: <strong style="color:#a3e635;">онлайн (ожидание)</strong></span>
+                </div>
+                <span style="font-size:0.85rem;">🔌 Bedrock & Java совместимость • 24/7</span>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <a href="minecraft://?addExternalServer=LaxTime|LaxTime.minerent.io:31023" class="btn btn-primary">
+                🎮 Добавить сервер (Java/Bedrock)
+            </a>
+            <button id="copyDirectCmd" class="btn btn-outline">
+                💾 Скопировать команду подключения
+            </button>
+        </div>
+
+        <div class="features">
+            <div class="feature-card">
+                <h3>✨ Ваниль + качество</h3>
+                <p>Актуальная версия 1.21.50, классический выживание без лишних плагинов, только атмосфера.</p>
+            </div>
+            <div class="feature-card">
+                <h3>🌍 Кроссплатформа</h3>
+                <p>Играйте с Java и Bedrock (PE, Windows 10/11) через один IP и порт.</p>
+            </div>
+            <div class="feature-card">
+                <h3>🛡️ Анти-грифер & защита</h3>
+                <p>Приватные территории, экономика и дружелюбная администрация.</p>
+            </div>
+        </div>
+
+        <div style="background: rgba(0,0,0,0.3); border-radius: 1.5rem; padding: 1rem 1.5rem; text-align: center; font-size:0.9rem;">
+            💡 <strong>Быстрый старт:</strong> скопируй адрес <code style="background:#00000055; padding:4px 8px; border-radius:12px;">LaxTime.minerent.io:31023</code> и вставь в меню мультиплеера Minecraft 1.21.50
+        </div>
+    </div>
+
+    <footer>
+        © 2025 LaxTime Minecraft Server | IP: LaxTime.minerent.io:31023 | Версия 1.21.50
+        <br><span style="font-size:0.7rem;">✨ Присоединяйся к нашему Discord & стань частью истории ✨</span>
+    </footer>
+
+    <script>
+        (function() {
+            const fullAddress = "LaxTime.minerent.io:31023";
+            const ipOnly = "LaxTime.minerent.io";
+            const port = "31023";
+
+            // Кнопка копирования IP:порт
+            const copyBtn = document.getElementById('copyIpBtn');
+            if(copyBtn) {
+                copyBtn.addEventListener('click', async () => {
+                    try {
+                        await navigator.clipboard.writeText(fullAddress);
+                        const originalText = copyBtn.innerHTML;
+                        copyBtn.innerHTML = '✅ Скопировано!';
+                        setTimeout(() => {
+                            copyBtn.innerHTML = originalText;
+                        }, 2000);
+                    } catch(err) {
+                        alert('Нажми Ctrl+C, чтобы скопировать: ' + fullAddress);
+                    }
+                });
+            }
+
+            // Кнопка скопировать команду для игры (можно использовать /connect для bedrock или просто текст)
+            const cmdBtn = document.getElementById('copyDirectCmd');
+            if(cmdBtn) {
+                cmdBtn.addEventListener('click', async () => {
+                    const connectMsg = `Подключение к LaxTime:\nIP: ${ipOnly}\nПорт: ${port}\nВерсия: 1.21.50\n\nВ Java Edition: "Мультиплеер" -> "Прямое подключение" -> введите ${fullAddress}\nВ Bedrock Edition: "Играть" -> "Серверы" -> добавить с адресом ${ipOnly} и портом ${port}`;
+                    try {
+                        await navigator.clipboard.writeText(`${fullAddress}`);
+                        cmdBtn.innerHTML = '📋 Адрес скопирован!';
+                        setTimeout(() => {
+                            cmdBtn.innerHTML = '💾 Скопировать команду подключения';
+                        }, 1800);
+                    } catch(e) {
+                        prompt("Скопируйте адрес вручную:", fullAddress);
+                    }
+                });
+            }
+
+            // Доп. эффект: динамический онлайн можно добавить через API, но оставим красивую заглушку
+            // Улучшим внешний вид: показываем версию сервера в консоли
+            console.log(`LaxTime Server | ${fullAddress} | Minecraft 1.21.50 ready`);
+        })();
+    </script>
+</body>
+</html>
